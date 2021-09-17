@@ -30,6 +30,7 @@ def test_str(k : Key):
 
 if __name__ == '__main__':
     key = Key()
+    key.passphrase = "zax"
     test_len(key)
     test_getitem(key)
     test_gt(key)

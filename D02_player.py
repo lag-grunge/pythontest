@@ -3,7 +3,7 @@ class Player:
     def __init__(self):
         pass
 
-    def next_turn(self, other_guy_turn):
+    def next_turn(self, other_guy_turn, *args):
         pass
 
     def reset(self):
@@ -15,7 +15,7 @@ class Cooperative(Player):
     def __init__(self):
         pass
 
-    def next_turn(self, other_guy_turn):
+    def next_turn(self, other_guy_turn, *args):
         return Cooperative.turn
 
     def __str__(self):
@@ -27,7 +27,7 @@ class Cheater(Player):
     def __init__(self):
         pass
 
-    def next_turn(self, other_guy_turn):
+    def next_turn(self, other_guy_turn, *args):
         return Cheater.turn
 
     def __str__(self):
@@ -38,7 +38,7 @@ class Copycat(Player):
     def __init__(self):
         self.other_guy_turn = "coop"
 
-    def next_turn(self, other_guy_turn):
+    def next_turn(self, other_guy_turn, *args):
         return other_guy_turn
 
     def __str__(self):
@@ -49,7 +49,7 @@ class Grudger(Player):
     def __init__(self):
         self.mode = "Cooperative"
 
-    def next_turn(self, other_guy_turn):
+    def next_turn(self, other_guy_turn, *args):
         if self.mode == "Cheater":
             return "cheat"
         if other_guy_turn == "cheat":
@@ -70,7 +70,7 @@ class Detective(Player):
         self.start_turns = ["coop", "cheat", "coop", "coop"]
         self.mode = "Detective"
 
-    def next_turn(self, other_guy_turn):
+    def next_turn(self, other_guy_turn, *args):
         if self.mode == "Detective":
             self.partner_turns.append(other_guy_turn)
             if len(self.partner_turns) == 4:
@@ -92,9 +92,31 @@ class Detective(Player):
     def __str__(self):
         return "Detective"
 
-class User(Player):
+class Imposter(Player):
     
     def __init__(self):
+        self.partner_turns = []
+        self.mode = "Copycat"
+
+    def next_turn(self, other_guy_turn, *args):
+        if self.mode == "Copycat":
+            self.partner_turns.append(other_guy_turn)
+            if len(self.partner_turns) == args[0]:
+                self.mode = "Cheater"
+        if self.mode == "Cheater":
+            return "cheat"
+        else:
+            return other_guy_turn
+
+    def reset(self):
+        self.partner_turns = []
+        self.mode = "Copycat"
+
+    def __str__(self):
+        return "Imposter"
+
+
+
 
 
     

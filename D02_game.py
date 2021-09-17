@@ -11,7 +11,7 @@ class Game(object):
         res1 = 0
         res2 = 0
         for match in range(self.matches):
-            turn1, turn2 = player1.next_turn(turn2), player2.next_turn(turn1)
+            turn1, turn2 = player1.next_turn(turn2, self.matches), player2.next_turn(turn1, self.matches)
             if turn2 == "coop" and turn1 == "coop":
                 res1, res2 = res1 + 2, res2 + 2
             elif turn2 == "cheat" and turn1 == "cheat":
