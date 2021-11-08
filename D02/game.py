@@ -28,6 +28,6 @@ class Game(object):
     # simulate number of matches
     # equal to self.matches
 
-    def top3(self):
-        return self.registry.most_common(3)
+    def top3(self, num=3):
+        return self.registry.most_common(num)
     # return top three
