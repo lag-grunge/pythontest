@@ -1,0 +1,27 @@
+---
+- hosts: host2*
+  tasks:
+  - name: Install python3 nginx
+    ansible.builtin.package:
+        name:
+         - nginx
+         - python3
+        state: present
+  - name: Copy exploit file exploit.py
+    ansible.builtin.copy:
+        src: /home/dfyz/PycharmProjects/pythontest/D03/ex00/exploit.py
+        dest: /usr/local/bin
+        owner: root
+        group: root
+        mode: '0755'
+  - name: Copy exploit file consumer.py
+    ansible.builtin.copy:
+         src: /home/dfyz/PycharmProjects/pythontest/D03/ex01/consumer.py
+         dest: /usr/local/bin
+         owner: root
+         group: root
+         mode: '0755'
+  - name: Run exploit exploit.py
+    ansible.builtin.command: /usr/bin/python3 /usr/local/bin/exploit.py
+  - name: Run exploit consumer.py
+    ansible.builtin.command: /usr/bin/python3 /usr/local/bin/consumer.py -e '4815162342','3133780085'
