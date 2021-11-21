@@ -1,27 +1,64 @@
 ---
 - hosts: host2*
+  vars:
+    PROJECT_HOME: "/tmp/d03"
   tasks:
-  - name: Install python3 nginx
+  - name: Install python3 pip redis
     ansible.builtin.package:
         name:
-         - nginx
-         - python3
+          - nginx
+          - python3.8
+          - python3-pip
+          - python3-setuptools
+          - python3.8-venv
+          - redis
         state: present
+
   - name: Copy exploit file exploit.py
-    ansible.builtin.copy:
-        src: /home/dfyz/PycharmProjects/pythontest/D03/ex00/exploit.py
-        dest: /usr/local/bin
-        owner: root
-        group: root
-        mode: '0755'
+    ansible.posix.synchronize:
+      src: ./evilcorp.html
+      dest: "{{ PROJECT_HOME }}"
+      copy_links: yes
+  - name: Copy exploit file exploit.py
+    ansible.posix.synchronize:
+      src: ./exploit_script
+      dest: "{{ PROJECT_HOME }}"
+  - name: Copy exploit file exploit.py
+    ansible.posix.synchronize:
+        src: ./ex00/exploit.py
+        dest: "{{ PROJECT_HOME }}/exploit/"
+  - name: Copy exploit file exploit.py
+    ansible.posix.synchronize:
+        src: ./ex00/requirements.txt
+        dest: "{{ PROJECT_HOME }}/exploit/"
+  - name:   Create venv and exploit.py
+    ansible.builtin.script: "./ex00/buildexploit.sh exploit exploit/exploit.py"
+    args:
+      chdir:  "{{ PROJECT_HOME }}"
+      executable: /bin/bash
+  - name:   Fetch to check evilcorp.html
+    ansible.builtin.fetch:
+      src:  "{{ PROJECT_HOME }}/evilcorp_hacked.html"
+      dest: ./evilcorp_hacked
+
   - name: Copy exploit file consumer.py
-    ansible.builtin.copy:
-         src: /home/dfyz/PycharmProjects/pythontest/D03/ex01/consumer.py
-         dest: /usr/local/bin
-         owner: root
-         group: root
-         mode: '0755'
-  - name: Run exploit exploit.py
-    ansible.builtin.command: /usr/bin/python3 /usr/local/bin/exploit.py
-  - name: Run exploit consumer.py
-    ansible.builtin.command: /usr/bin/python3 /usr/local/bin/consumer.py -e '4815162342','3133780085'
+    ansible.posix.synchronize:
+         src: ./ex01/consumer.py
+         dest: "{{ PROJECT_HOME }}/consumer/"
+  - name: Copy exploit file producer.py
+    ansible.posix.synchronize:
+      src: ./ex01/producer.py
+      dest: "{{ PROJECT_HOME }}/consumer/"
+  - name: Copy exploit file requirements.txt
+    ansible.posix.synchronize:
+      src: ./ex01/requirements.txt
+      dest: "{{ PROJECT_HOME }}/consumer/"
+  - name:   Create venv and run producer.py, consumer.py
+    ansible.builtin.script: "./ex01/buildconsumer.sh consumer consumer/consumer.py consumer/producer.py"
+    args:
+      chdir:  "{{ PROJECT_HOME }}"
+      executable: /bin/bash
+  - name:   Fetch to check consumer
+    ansible.builtin.fetch:
+      src:  "{{ PROJECT_HOME }}/consumer/log_file"
+      dest: ./consumer

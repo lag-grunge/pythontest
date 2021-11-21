@@ -7,6 +7,7 @@ authors = ["sdalton <sdalton@student.21-school.ru>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 ansible = "^4.8.0"
+requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
 

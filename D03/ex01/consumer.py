@@ -1,11 +1,15 @@
 #! /bin/python3
 import logging
 import json
+import os.path
+
 from producer import r
 import time
 import sys
 
 stop = False
+
+logging.LogRecord(level=logging.INFO, pathname=os.path.realpath(__file__),
 
 if __name__=="__main__":
     evil_list = []
